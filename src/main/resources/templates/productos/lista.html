@@ -1,0 +1,143 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos | SoftCafé</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f1eb;
+            margin: 0;
+            padding: 30px;
+            color: #3e2723;
+        }
+
+        .contenedor {
+            max-width: 1100px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px #00000015;
+        }
+
+        h1 {
+            color: #6f4e37;
+        }
+
+        .boton {
+            display: inline-block;
+            background: #6f4e37;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 25px;
+        }
+
+        th, td {
+            padding: 13px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background: #6f4e37;
+            color: white;
+        }
+
+        .mensaje {
+            background: #e1f3e5;
+            padding: 12px;
+            margin-top: 15px;
+            border-radius: 6px;
+        }
+
+        .error {
+            background: #fce4e4;
+            padding: 12px;
+            margin-top: 15px;
+            border-radius: 6px;
+        }
+
+        .acciones {
+            display: flex;
+            gap: 8px;
+        }
+
+        .eliminar {
+            background: #a93226;
+        }
+    </style>
+</head>
+
+<body>
+<div class="contenedor">
+
+    <h1>SoftCafé - Gestión de productos</h1>
+    <p>Administra los productos y el inventario de tu cafetería.</p>
+
+    <a class="boton" th:href="@{/productos/nuevo}">
+        Registrar producto
+    </a>
+
+    <div class="mensaje" th:if="${mensaje}" th:text="${mensaje}"></div>
+    <div class="error" th:if="${error}" th:text="${error}"></div>
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Código</th>
+            <th>Nombre</th>
+            <th>Precio</th>
+            <th>Stock</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="producto : ${productos}">
+            <td th:text="${producto.id}"></td>
+            <td th:text="${producto.codigo}"></td>
+            <td th:text="${producto.nombre}"></td>
+            <td th:text="${#numbers.formatDecimal(producto.precio, 1, 2)}"></td>
+            <td th:text="${producto.stock}"></td>
+
+            <td>
+                <div class="acciones">
+                    <a class="boton"
+                       th:href="@{/productos/editar/{id}(id=${producto.id})}">
+                        Editar
+                    </a>
+
+                    <form th:action="@{/productos/eliminar/{id}(id=${producto.id})}"
+                          method="post">
+                        <button class="boton eliminar" type="submit"
+                                onclick="return confirm('¿Deseas eliminar este producto?')">
+                            Eliminar
+                        </button>
+                    </form>
+                </div>
+            </td>
+        </tr>
+
+        <tr th:if="${#lists.isEmpty(productos)}">
+            <td colspan="6">No hay productos registrados.</td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+</body>
+</html>
